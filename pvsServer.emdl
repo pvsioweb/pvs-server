@@ -1,0 +1,1820 @@
+{
+ "descriptor": {
+  "file_type": "emdl",
+  "version": "2.0",
+  "description": "emucharts model",
+  "chart_name": "pvsServer"
+ },
+ "chart": {
+  "states": [
+   {
+    "id": "X2",
+    "name": "READY",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": -129.00000381469727,
+    "y": 179,
+    "enter": "req := NULL_REQ;",
+    "exit": "unsavedProof := false;",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X3",
+    "name": "AWAIT_CMD",
+    "color": "yellow",
+    "width": 36,
+    "height": 36,
+    "x": 832,
+    "y": 188,
+    "enter": "req := NULL_REQ;",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X1",
+    "name": "PROVING",
+    "color": "yellow",
+    "width": 36,
+    "height": 36,
+    "x": 451.2697448730469,
+    "y": -64.12759673595428,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X4",
+    "name": "START_PROVER",
+    "color": "yellow",
+    "width": 36,
+    "height": 36,
+    "x": 360.5078125,
+    "y": 185.53904724121094,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X5",
+    "name": "GET_PROOF_SCRIPT",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": -326.74224853515625,
+    "y": 624.0390625,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X6",
+    "name": "TYPECHECKING",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": 147.50778195261955,
+    "y": 622.5390625,
+    "enter": "",
+    "exit": "defs := UPDATED_DEFS",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X7",
+    "name": "PARSING",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": -388.9921875,
+    "y": -193.9609375,
+    "enter": "",
+    "exit": "defs := UPDATED_DEFS",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X8",
+    "name": "INTERRUPTING",
+    "color": "yellow",
+    "width": 36,
+    "height": 36,
+    "x": 669.2222290039062,
+    "y": -174.17523765563965,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X11",
+    "name": "FS_UPDATE",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": -411.49224853515625,
+    "y": 178.87240600585938,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X9",
+    "name": "WORKSPACE_UPDATE",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": -386.25,
+    "y": -276.25,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X10",
+    "name": "SAVE_PROOF",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": 352.66668701171875,
+    "y": -274.1666564941406,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X12",
+    "name": "TCCS",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": 12,
+    "y": 414,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   },
+   {
+    "id": "X13",
+    "name": "SW_UPDATE",
+    "color": "lightgreen",
+    "width": 36,
+    "height": 36,
+    "x": -535,
+    "y": 177,
+    "enter": "",
+    "exit": "",
+    "pmr": [],
+    "widgets": [],
+    "components": []
+   }
+  ],
+  "transitions": [
+   {
+    "id": "T3",
+    "name": "proveFormula {\n\tres := ERROR_MUST_EXIT_PROVER_FIRST\n}",
+    "source": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 540.0099487304688,
+     "y": 401.0227355957031
+    }
+   },
+   {
+    "id": "T5",
+    "name": "proofScript {\n\tres := ERROR_MUST_EXIT_PROVER_FIRST\n}",
+    "source": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 581.0099487304688,
+     "y": 419.0227355957031
+    }
+   },
+   {
+    "id": "T1",
+    "name": "proofCommand {\n\treq := PROOF_CMD\n}",
+    "source": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 525.1819454316129,
+     "y": 51.576648868791054
+    }
+   },
+   {
+    "id": "T10",
+    "name": "notify_INVALID_COMMAND {\n\tres := SEQUENT\n}",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 812.0099487304688,
+     "y": 37.022743225097656
+    }
+   },
+   {
+    "id": "T11",
+    "name": "notify_NO_CHANGE {\n\tres := SEQUENT\n}",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 794.2605607228729,
+     "y": 63.02110255900615
+    }
+   },
+   {
+    "id": "T13",
+    "name": "notify_SEQUENT {\n\tres := SEQUENT\n}",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 794.0099487304688,
+     "y": 92.02274322509766
+    }
+   },
+   {
+    "id": "T15",
+    "name": "notify_BRANCH_COMPLETE {\n\tres := SEQUENT_BRANCH_COMPLETE\n}",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 830.0099487304688,
+     "y": 7.02274751663208
+    }
+   },
+   {
+    "id": "T17",
+    "name": "notify_ABORT {\n\tres := PROOF_ABORTED;\n    unsavedProof := true;\n}",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 342.3032670570847,
+     "y": 8.776425626816321
+    }
+   },
+   {
+    "id": "T2",
+    "name": "proveFormula {\n\treq := FORMULANAME_FULLTHEORYNAME\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X4",
+     "name": "START_PROVER",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 360.5078125,
+     "y": 185.53904724121094,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 126,
+     "y": 184
+    }
+   },
+   {
+    "id": "T14",
+    "name": "notify_SEQUENT [\n\ttypechecked = true\n] {\n\tres := SEQUENT\n}",
+    "source": {
+     "id": "X4",
+     "name": "START_PROVER",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 360.5078125,
+     "y": 185.53904724121094,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 503.9702749708525,
+     "y": 185.99859555819947
+    }
+   },
+   {
+    "id": "T6",
+    "name": "notify_QED [\n\ttypechecked = true\n] {\n\tres := SEQUENT_QED;\n}",
+    "source": {
+     "id": "X4",
+     "name": "START_PROVER",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 360.5078125,
+     "y": 185.53904724121094,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 322,
+     "y": 98
+    }
+   },
+   {
+    "id": "T21",
+    "name": "proofScript {\n\treq := FILENAME_FORMULANAME;\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X5",
+     "name": "GET_PROOF_SCRIPT",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -326.74224853515625,
+     "y": 624.0390625,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -170,
+     "y": 503
+    }
+   },
+   {
+    "id": "T22",
+    "name": "notify_PROOF_SCRIPT [\n\ttypechecked = true\n] {\n\tres := PRF_PROOF\n}",
+    "source": {
+     "id": "X5",
+     "name": "GET_PROOF_SCRIPT",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -326.74224853515625,
+     "y": 624.0390625,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -351,
+     "y": 445
+    }
+   },
+   {
+    "id": "T23",
+    "name": "notify_ERROR [\n\ttypechecked = true\n] {\n\tres := ERROR_PROOF_NOT_FOUND\n}",
+    "source": {
+     "id": "X5",
+     "name": "GET_PROOF_SCRIPT",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -326.74224853515625,
+     "y": 624.0390625,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -381,
+     "y": 427
+    }
+   },
+   {
+    "id": "T16",
+    "name": "typecheckFile {\n\treq := FILENAME;\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -93,
+     "y": 514
+    }
+   },
+   {
+    "id": "T4",
+    "name": "notify_SUCCESS [ previous_mode = READY ]{\n\ttypechecked := true;\n\tres := TYPECHECK_SUCCESS;\n}",
+    "source": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 191,
+     "y": 317
+    }
+   },
+   {
+    "id": "T19",
+    "name": "parseFile {\n\treq := FILENAME;\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X7",
+     "name": "PARSING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -388.9921875,
+     "y": -193.9609375,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -438.33331298828125,
+     "y": -71.66666412353516
+    }
+   },
+   {
+    "id": "T20",
+    "name": "notify_ERROR {\n    parsed := false;\n\tres := PARSE_ERROR;\n}",
+    "source": {
+     "id": "X7",
+     "name": "PARSING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -388.9921875,
+     "y": -193.9609375,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -276.25,
+     "y": -180
+    }
+   },
+   {
+    "id": "T24",
+    "name": "notify_SUCCESS {\n    parsed := true;\n\tres := PARSE_SUCCESS;\n}",
+    "source": {
+     "id": "X7",
+     "name": "PARSING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -388.9921875,
+     "y": -193.9609375,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -242,
+     "y": -193
+    }
+   },
+   {
+    "id": "T25",
+    "name": "interrupt",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X8",
+     "name": "INTERRUPTING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 669.2222290039062,
+     "y": -174.17523765563965,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 570.9243109931905,
+     "y": -169.89537408278304
+    }
+   },
+   {
+    "id": "T26",
+    "name": "notify_INTERRUPTED_BY_CLIENT {\n\tres := SEQUENT\n}",
+    "source": {
+     "id": "X8",
+     "name": "INTERRUPTING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 669.2222290039062,
+     "y": -174.17523765563965,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X3",
+     "name": "AWAIT_CMD",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 832,
+     "y": 188,
+     "enter": "req := NULL_REQ;",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 869.0099487304688,
+     "y": 1.02274751663208
+    }
+   },
+   {
+    "id": "T8",
+    "name": "tick",
+    "source": {
+     "id": "X8",
+     "name": "INTERRUPTING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 669.2222290039062,
+     "y": -174.17523765563965,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 546.0099487304688,
+     "y": -74.97725677490234
+    }
+   },
+   {
+    "id": "T18",
+    "name": "evt_DID_UPDATE_FS",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X11",
+     "name": "FS_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -411.49224853515625,
+     "y": 178.87240600585938,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -328,
+     "y": 179
+    }
+   },
+   {
+    "id": "T27",
+    "name": "tick {\n\tparsed := false;\n    typechecked := false;\n}",
+    "source": {
+     "id": "X11",
+     "name": "FS_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -411.49224853515625,
+     "y": 178.87240600585938,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -232,
+     "y": 197
+    }
+   },
+   {
+    "id": "T32",
+    "name": "notify_ERROR {\n    typechecked := false;\n\tres := TYPECHECK_ERROR;\n}",
+    "source": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 160,
+     "y": 350
+    }
+   },
+   {
+    "id": "T12",
+    "name": "tick [ typechecked = false ]",
+    "source": {
+     "id": "X5",
+     "name": "GET_PROOF_SCRIPT",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -326.74224853515625,
+     "y": 624.0390625,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -156.41309383724195,
+     "y": 642.9713909970899
+    }
+   },
+   {
+    "id": "T28",
+    "name": "tick [\n\tprevious_mode = GET_PROOF_SCRIPT\n] {\n\ttypechecked := true;\n}",
+    "source": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X5",
+     "name": "GET_PROOF_SCRIPT",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -326.74224853515625,
+     "y": 624.0390625,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -91.90762796903078,
+     "y": 624.4132251048271
+    }
+   },
+   {
+    "id": "T7",
+    "name": "tick [ typechecked = false ]",
+    "source": {
+     "id": "X4",
+     "name": "START_PROVER",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 360.5078125,
+     "y": 185.53904724121094,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 249,
+     "y": 562
+    }
+   },
+   {
+    "id": "T29",
+    "name": "tick [ previous_mode = START_PROVER ] {\n\ttypechecked := true;\n}",
+    "source": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X4",
+     "name": "START_PROVER",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 360.5078125,
+     "y": 185.53904724121094,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 257,
+     "y": 257
+    }
+   },
+   {
+    "id": "T30",
+    "name": "changeWorkspace {\n\treq := FOLDERNAME\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X9",
+     "name": "WORKSPACE_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -386.25,
+     "y": -276.25,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -478.75,
+     "y": -57.5
+    }
+   },
+   {
+    "id": "T31",
+    "name": "tick [ req = FOLDERNAME ] {\n\tres := FOLDERNAME\n}",
+    "source": {
+     "id": "X9",
+     "name": "WORKSPACE_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -386.25,
+     "y": -276.25,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -162,
+     "y": -269
+    }
+   },
+   {
+    "id": "T33",
+    "name": "clearTheories {\n\treq := CLEAR;\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X9",
+     "name": "WORKSPACE_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -386.25,
+     "y": -276.25,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -493.75,
+     "y": -16.25
+    }
+   },
+   {
+    "id": "T34",
+    "name": "tick [ req = CLEAR ] {\n\tdefs := EMPTY;\n\tparsed := false;\n    typechecked := false;\n}",
+    "source": {
+     "id": "X9",
+     "name": "WORKSPACE_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -386.25,
+     "y": -276.25,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -205,
+     "y": -259
+    }
+   },
+   {
+    "id": "T35",
+    "name": "notify_QED {\n\tres := SEQUENT_QED\n}",
+    "source": {
+     "id": "X1",
+     "name": "PROVING",
+     "color": "yellow",
+     "width": 36,
+     "height": 36,
+     "x": 451.2697448730469,
+     "y": -64.12759673595428,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X10",
+     "name": "SAVE_PROOF",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 352.66668701171875,
+     "y": -274.1666564941406,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 448.00994873046875,
+     "y": -245.9772491455078
+    }
+   },
+   {
+    "id": "T36",
+    "name": "tick {\n\tunsavedProof := false;\n}",
+    "source": {
+     "id": "X10",
+     "name": "SAVE_PROOF",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 352.66668701171875,
+     "y": -274.1666564941406,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 323.3498840332031,
+     "y": -78.29546356201172
+    }
+   },
+   {
+    "id": "T9",
+    "name": "saveLastStoredProofAttempt [\n\tunsavedProof = true\n] {\n\treq := FORMULANAME_FULLTHEORYNAME\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X10",
+     "name": "SAVE_PROOF",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 352.66668701171875,
+     "y": -274.1666564941406,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 199.8728310820956,
+     "y": -219
+    }
+   },
+   {
+    "id": "T37",
+    "name": "showTCCs {\n\treq := FULLTHEORYNAME\n}",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X12",
+     "name": "TCCS",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 12,
+     "y": 414,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -69.42763358048255,
+     "y": 416.29288539170744
+    }
+   },
+   {
+    "id": "T38",
+    "name": "tick [\n\ttypechecked = false\n]",
+    "source": {
+     "id": "X12",
+     "name": "TCCS",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 12,
+     "y": 414,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -55,
+     "y": 485
+    }
+   },
+   {
+    "id": "T39",
+    "name": "tick [\n\tprevious_mode = TCCS\n] {\n\ttypechecked := true;\n}",
+    "source": {
+     "id": "X6",
+     "name": "TYPECHECKING",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 147.50778195261955,
+     "y": 622.5390625,
+     "enter": "",
+     "exit": "defs := UPDATED_DEFS",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X12",
+     "name": "TCCS",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 12,
+     "y": 414,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 97,
+     "y": 417
+    }
+   },
+   {
+    "id": "T40",
+    "name": "notify_TCCS [\n\ttypechecked = true\n] {\n\tres := TCCS\n}",
+    "source": {
+     "id": "X12",
+     "name": "TCCS",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": 12,
+     "y": 414,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": 72,
+     "y": 339
+    }
+   },
+   {
+    "id": "T41",
+    "name": "loadPvsPatches",
+    "source": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X13",
+     "name": "SW_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -535,
+     "y": 177,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -436.8338363114634,
+     "y": 127.18702955103628
+    }
+   },
+   {
+    "id": "T42",
+    "name": "tick",
+    "source": {
+     "id": "X13",
+     "name": "SW_UPDATE",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -535,
+     "y": 177,
+     "enter": "",
+     "exit": "",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    },
+    "controlPoint": {
+     "x": -440,
+     "y": 232
+    }
+   }
+  ],
+  "initial_transitions": [
+   {
+    "id": "IT1",
+    "name": "",
+    "target": {
+     "id": "X2",
+     "name": "READY",
+     "color": "lightgreen",
+     "width": 36,
+     "height": 36,
+     "x": -129.00000381469727,
+     "y": 179,
+     "enter": "req := NULL_REQ;",
+     "exit": "unsavedProof := false;",
+     "pmr": [],
+     "widgets": [],
+     "components": []
+    }
+   }
+  ],
+  "variables": [
+   {
+    "id": "VAR_res:PvsResponse(Local)",
+    "name": "res",
+    "type": "PvsResponse",
+    "value": "NULL_RES",
+    "scope": "Local"
+   },
+   {
+    "id": "VAR_typechecked:boolean(Local)",
+    "name": "typechecked",
+    "type": "boolean",
+    "value": "false",
+    "scope": "Local"
+   },
+   {
+    "id": "VAR_parsed:boolean(Local)",
+    "name": "parsed",
+    "type": "boolean",
+    "value": "false",
+    "scope": "Local"
+   },
+   {
+    "id": "VAR_req:PvsRequest(Local)",
+    "name": "req",
+    "type": "PvsRequest",
+    "value": "NULL_REQ",
+    "scope": "Local"
+   },
+   {
+    "id": "VAR_defs:DefinitionList(Local)",
+    "name": "defs",
+    "type": "DefinitionList",
+    "value": "EMPTY",
+    "scope": "Local"
+   },
+   {
+    "id": "VAR_unsavedProof:boolean(Local)",
+    "name": "unsavedProof",
+    "type": "boolean",
+    "value": "false",
+    "scope": "Local"
+   }
+  ],
+  "constants": [],
+  "datatypes": [
+   {
+    "id": "DATATYPE_DefinitionList",
+    "name": "DefinitionList",
+    "constructors": [
+     "EMPTY",
+     "UPDATED_DEFS"
+    ]
+   },
+   {
+    "id": "DATATYPE_PvsRequest",
+    "name": "PvsRequest",
+    "constructors": [
+     "NULL_REQ",
+     "FOLDERNAME",
+     "FILENAME",
+     "FILENAME_FORMULANAME",
+     "FORMULANAME_FULLTHEORYNAME",
+     "FULLTHEORYNAME",
+     "PROOF_CMD",
+     "CLEAR"
+    ]
+   },
+   {
+    "id": "DATATYPE_PvsResponse",
+    "name": "PvsResponse",
+    "constructors": [
+     "TCCS",
+     "SEQUENT",
+     "SEQUENT_BRANCH_COMPLETE",
+     "SEQUENT_QED",
+     "PRF_PROOF",
+     "ERROR_MUST_EXIT_PROVER_FIRST",
+     "PROOF_ABORTED",
+     "ERROR_PROOF_NOT_FOUND",
+     "TYPECHECK_SUCCESS",
+     "TYPECHECK_ERROR",
+     "PARSE_SUCCESS",
+     "PARSE_ERROR",
+     "ERROR_NOT_TYPECHECKED",
+     "FOLDERNAME",
+     "NULL_RES"
+    ]
+   }
+  ],
+  "pmr": {},
+  "isPIM": false
+ }
+}

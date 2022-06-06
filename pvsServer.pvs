@@ -1,0 +1,783 @@
+pvsServer: THEORY 
+  BEGIN
+   %-- user-defined datatypes
+   DefinitionList: TYPE = { EMPTY, UPDATED_DEFS }
+   PvsRequest: TYPE = { NULL_REQ, FOLDERNAME, FILENAME, FILENAME_FORMULANAME, FORMULANAME_FULLTHEORYNAME, FULLTHEORYNAME, PROOF_CMD, CLEAR }
+   PvsResponse: TYPE = { TCCS, SEQUENT, SEQUENT_BRANCH_COMPLETE, SEQUENT_QED, PRF_PROOF, ERROR_MUST_EXIT_PROVER_FIRST, PROOF_ABORTED, ERROR_PROOF_NOT_FOUND, TYPECHECK_SUCCESS, TYPECHECK_ERROR, PARSE_SUCCESS, PARSE_ERROR, ERROR_NOT_TYPECHECKED, FOLDERNAME, NULL_RES }
+   %-- operating modes
+   Mode: TYPE = { AWAIT_CMD, FS_UPDATE, GET_PROOF_SCRIPT, INTERRUPTING, PARSING, PROVING, READY, SAVE_PROOF, START_PROVER, SW_UPDATE, TCCS, TYPECHECKING, WORKSPACE_UPDATE }
+   %-- state attributes
+   State: TYPE = [#
+     mode: Mode,
+     previous_mode: Mode,
+     defs: DefinitionList,
+     parsed: boolean,
+     req: PvsRequest,
+     res: PvsResponse,
+     typechecked: boolean,
+     unsavedProof: boolean
+   #]
+   %-- init function
+   init(x: real): State = (#
+     previous_mode := READY, 
+     mode := READY, 
+     defs := EMPTY, 
+     parsed := false, 
+     req := NULL_REQ, 
+     res := NULL_RES, 
+     typechecked := false, 
+     unsavedProof := false
+   #)
+   %-- leave/enter functions
+   enter(m: Mode)(st: State): State = 
+     LET st = st WITH [ mode := m ]
+      IN COND %-- entry actions
+          mode(st) = AWAIT_CMD
+            -> LET st = st WITH [ req := NULL_REQ ]
+                IN st,
+          mode(st) = READY
+            -> LET st = st WITH [ req := NULL_REQ ]
+                IN st,
+            ELSE -> st
+         ENDCOND
+   leave(m: Mode)(st: State): State = 
+     LET st = st WITH [ mode := m ]
+      IN COND %-- entry actions
+          mode(st) = PARSING
+            -> LET st = st WITH [ defs := UPDATED_DEFS ]
+                IN st,
+          mode(st) = READY
+            -> LET st = st WITH [ unsavedProof := false ]
+                IN st,
+          mode(st) = TYPECHECKING
+            -> LET st = st WITH [ defs := UPDATED_DEFS ]
+                IN st,
+            ELSE -> st
+         ENDCOND
+ 
+   %-- transitions
+   per_changeWorkspace(st: State): bool = (mode(st) = READY)
+   changeWorkspace(st: (per_changeWorkspace)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FOLDERNAME ]
+           IN enter(WORKSPACE_UPDATE)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_clearTheories(st: State): bool = (mode(st) = READY)
+   clearTheories(st: (per_clearTheories)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := CLEAR ]
+           IN enter(WORKSPACE_UPDATE)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_evt_DID_UPDATE_FS(st: State): bool = (mode(st) = READY)
+   evt_DID_UPDATE_FS(st: (per_evt_DID_UPDATE_FS)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st)
+           IN enter(FS_UPDATE)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_interrupt(st: State): bool = (mode(st) = PROVING)
+   interrupt(st: (per_interrupt)): State =
+     COND
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st)
+           IN enter(INTERRUPTING)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_loadPvsPatches(st: State): bool = (mode(st) = READY)
+   loadPvsPatches(st: (per_loadPvsPatches)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st)
+           IN enter(SW_UPDATE)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_ABORT(st: State): bool = (mode(st) = PROVING)
+   notify_ABORT(st: (per_notify_ABORT)): State =
+     COND
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st),
+              st = st WITH [ res := PROOF_ABORTED ],
+              st = st WITH [ unsavedProof := true ]
+           IN enter(READY)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_BRANCH_COMPLETE(st: State): bool = (mode(st) = PROVING)
+   notify_BRANCH_COMPLETE(st: (per_notify_BRANCH_COMPLETE)): State =
+     COND
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st),
+              st = st WITH [ res := SEQUENT_BRANCH_COMPLETE ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_ERROR(st: State): bool = (mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true ))
+     OR (mode(st) = PARSING)
+     OR (mode(st) = TYPECHECKING)
+   notify_ERROR(st: (per_notify_ERROR)): State =
+     COND
+      mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true )
+       -> LET st = leave(GET_PROOF_SCRIPT)(st),
+              st = st WITH [ res := ERROR_PROOF_NOT_FOUND ]
+           IN enter(READY)(st),
+      mode(st) = PARSING
+       -> LET st = leave(PARSING)(st),
+              st = st WITH [ parsed := false ],
+              st = st WITH [ res := PARSE_ERROR ]
+           IN enter(READY)(st),
+      mode(st) = TYPECHECKING
+       -> LET st = leave(TYPECHECKING)(st),
+              st = st WITH [ typechecked := false ],
+              st = st WITH [ res := TYPECHECK_ERROR ]
+           IN enter(READY)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_INTERRUPTED_BY_CLIENT(st: State): bool = (mode(st) = INTERRUPTING)
+   notify_INTERRUPTED_BY_CLIENT(st: (per_notify_INTERRUPTED_BY_CLIENT)): State =
+     COND
+      mode(st) = INTERRUPTING
+       -> LET st = leave(INTERRUPTING)(st),
+              st = st WITH [ res := SEQUENT ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_INVALID_COMMAND(st: State): bool = (mode(st) = PROVING)
+   notify_INVALID_COMMAND(st: (per_notify_INVALID_COMMAND)): State =
+     COND
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st),
+              st = st WITH [ res := SEQUENT ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_NO_CHANGE(st: State): bool = (mode(st) = PROVING)
+   notify_NO_CHANGE(st: (per_notify_NO_CHANGE)): State =
+     COND
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st),
+              st = st WITH [ res := SEQUENT ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_PROOF_SCRIPT(st: State): bool = (mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true ))
+   notify_PROOF_SCRIPT(st: (per_notify_PROOF_SCRIPT)): State =
+     COND
+      mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true )
+       -> LET st = leave(GET_PROOF_SCRIPT)(st),
+              st = st WITH [ res := PRF_PROOF ]
+           IN enter(READY)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_QED(st: State): bool = (mode(st) = START_PROVER AND ( typechecked(st) = true ))
+     OR (mode(st) = PROVING)
+   notify_QED(st: (per_notify_QED)): State =
+     COND
+      mode(st) = START_PROVER AND ( typechecked(st) = true )
+       -> LET st = leave(START_PROVER)(st),
+              st = st WITH [ res := SEQUENT_QED ]
+           IN enter(READY)(st),
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st),
+              st = st WITH [ res := SEQUENT_QED ]
+           IN enter(SAVE_PROOF)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_SEQUENT(st: State): bool = (mode(st) = START_PROVER AND ( typechecked(st) = true ))
+     OR (mode(st) = PROVING)
+   notify_SEQUENT(st: (per_notify_SEQUENT)): State =
+     COND
+      mode(st) = START_PROVER AND ( typechecked(st) = true )
+       -> LET st = leave(START_PROVER)(st),
+              st = st WITH [ res := SEQUENT ]
+           IN enter(AWAIT_CMD)(st),
+      mode(st) = PROVING
+       -> LET st = leave(PROVING)(st),
+              st = st WITH [ res := SEQUENT ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_SUCCESS(st: State): bool = (mode(st) = TYPECHECKING AND ( previous_mode(st) = READY ))
+     OR (mode(st) = PARSING)
+   notify_SUCCESS(st: (per_notify_SUCCESS)): State =
+     COND
+      mode(st) = TYPECHECKING AND ( previous_mode(st) = READY )
+       -> LET st = leave(TYPECHECKING)(st),
+              st = st WITH [ typechecked := true ],
+              st = st WITH [ res := TYPECHECK_SUCCESS ]
+           IN enter(READY)(st),
+      mode(st) = PARSING
+       -> LET st = leave(PARSING)(st),
+              st = st WITH [ parsed := true ],
+              st = st WITH [ res := PARSE_SUCCESS ]
+           IN enter(READY)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_notify_TCCS(st: State): bool = (mode(st) = TCCS AND ( typechecked(st) = true ))
+   notify_TCCS(st: (per_notify_TCCS)): State =
+     COND
+      mode(st) = TCCS AND ( typechecked(st) = true )
+       -> LET st = leave(TCCS)(st),
+              st = st WITH [ res := TCCS ]
+           IN enter(READY)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_parseFile(st: State): bool = (mode(st) = READY)
+   parseFile(st: (per_parseFile)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FILENAME ]
+           IN enter(PARSING)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_proofCommand(st: State): bool = (mode(st) = AWAIT_CMD)
+   proofCommand(st: (per_proofCommand)): State =
+     COND
+      mode(st) = AWAIT_CMD
+       -> LET st = leave(AWAIT_CMD)(st),
+              st = st WITH [ req := PROOF_CMD ]
+           IN enter(PROVING)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_proofScript(st: State): bool = (mode(st) = READY)
+     OR (mode(st) = AWAIT_CMD)
+   proofScript(st: (per_proofScript)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FILENAME_FORMULANAME ]
+           IN enter(GET_PROOF_SCRIPT)(st),
+      mode(st) = AWAIT_CMD
+       -> LET st = leave(AWAIT_CMD)(st),
+              st = st WITH [ res := ERROR_MUST_EXIT_PROVER_FIRST ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_proveFormula(st: State): bool = (mode(st) = READY)
+     OR (mode(st) = AWAIT_CMD)
+   proveFormula(st: (per_proveFormula)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FORMULANAME_FULLTHEORYNAME ]
+           IN enter(START_PROVER)(st),
+      mode(st) = AWAIT_CMD
+       -> LET st = leave(AWAIT_CMD)(st),
+              st = st WITH [ res := ERROR_MUST_EXIT_PROVER_FIRST ]
+           IN enter(AWAIT_CMD)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_saveLastStoredProofAttempt(st: State): bool = (mode(st) = READY AND ( unsavedProof(st) = true ))
+   saveLastStoredProofAttempt(st: (per_saveLastStoredProofAttempt)): State =
+     COND
+      mode(st) = READY AND ( unsavedProof(st) = true )
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FORMULANAME_FULLTHEORYNAME ]
+           IN enter(SAVE_PROOF)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_showTCCs(st: State): bool = (mode(st) = READY)
+   showTCCs(st: (per_showTCCs)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FULLTHEORYNAME ]
+           IN enter(TCCS)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_tick(st: State): bool = (mode(st) = INTERRUPTING)
+     OR (mode(st) = SW_UPDATE)
+     OR (mode(st) = TYPECHECKING AND ( previous_mode(st) = GET_PROOF_SCRIPT))
+     OR (mode(st) = TYPECHECKING AND ( previous_mode(st) = TCCS ))
+     OR (mode(st) = TCCS AND ( typechecked(st) = false ))
+     OR (mode(st) = TYPECHECKING AND ( previous_mode(st) = START_PROVER ))
+     OR (mode(st) = WORKSPACE_UPDATE AND ( req(st) = CLEAR ))
+     OR (mode(st) = WORKSPACE_UPDATE AND ( req(st) = FOLDERNAME ))
+     OR (mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = false ))
+     OR (mode(st) = START_PROVER AND ( typechecked(st) = false ))
+     OR (mode(st) = FS_UPDATE)
+     OR (mode(st) = SAVE_PROOF)
+   tick(st: (per_tick)): State =
+     COND
+      mode(st) = INTERRUPTING
+       -> LET st = leave(INTERRUPTING)(st)
+           IN enter(PROVING)(st),
+      mode(st) = SW_UPDATE
+       -> LET st = leave(SW_UPDATE)(st)
+           IN enter(READY)(st),
+      mode(st) = TYPECHECKING AND ( previous_mode(st) = GET_PROOF_SCRIPT )
+       -> LET st = leave(TYPECHECKING)(st),
+              st = st WITH [ typechecked := true ]
+           IN enter(GET_PROOF_SCRIPT)(st),
+      mode(st) = TYPECHECKING AND ( previous_mode(st) = TCCS )
+       -> LET st = leave(TYPECHECKING)(st),
+              st = st WITH [ typechecked := true ]
+           IN enter(TCCS)(st),
+      mode(st) = TCCS AND ( typechecked(st) = false )
+       -> LET st = leave(TCCS)(st)
+           IN enter(TYPECHECKING)(st),
+      mode(st) = TYPECHECKING AND ( previous_mode(st) = START_PROVER )
+       -> LET st = leave(TYPECHECKING)(st),
+              st = st WITH [ typechecked := true ]
+           IN enter(START_PROVER)(st),
+      mode(st) = WORKSPACE_UPDATE AND ( req(st) = CLEAR )
+       -> LET st = leave(WORKSPACE_UPDATE)(st),
+              st = st WITH [ defs := EMPTY ],
+              st = st WITH [ parsed := false ],
+              st = st WITH [ typechecked := false ]
+           IN enter(READY)(st),
+      mode(st) = WORKSPACE_UPDATE AND ( req(st) = FOLDERNAME )
+       -> LET st = leave(WORKSPACE_UPDATE)(st),
+              st = st WITH [ res := FOLDERNAME ]
+           IN enter(READY)(st),
+      mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = false )
+       -> LET st = leave(GET_PROOF_SCRIPT)(st)
+           IN enter(TYPECHECKING)(st),
+      mode(st) = START_PROVER AND ( typechecked(st) = false )
+       -> LET st = leave(START_PROVER)(st)
+           IN enter(TYPECHECKING)(st),
+      mode(st) = FS_UPDATE
+       -> LET st = leave(FS_UPDATE)(st),
+              st = st WITH [ parsed := false ],
+              st = st WITH [ typechecked := false ]
+           IN enter(READY)(st),
+      mode(st) = SAVE_PROOF
+       -> LET st = leave(SAVE_PROOF)(st),
+              st = st WITH [ unsavedProof := false ]
+           IN enter(READY)(st),
+      ELSE -> st
+     ENDCOND
+ 
+   per_typecheckFile(st: State): bool = (mode(st) = READY)
+   typecheckFile(st: (per_typecheckFile)): State =
+     COND
+      mode(st) = READY
+       -> LET st = leave(READY)(st),
+              st = st WITH [ req := FILENAME ]
+           IN enter(TYPECHECKING)(st),
+      ELSE -> st
+     ENDCOND
+  
+  END pvsServer 
+  
+% pvsServer: THEORY
+%  BEGIN
+%   %-- user-defined datatypes
+%   DefinitionList: TYPE = { EMPTY, UPDATED_DEFS }
+%   PvsRequest: TYPE = { NULL_REQ, FOLDERNAME, FILENAME, FILENAME_FORMULANAME, FORMULANAME_FULLTHEORYNAME, FULLTHEORYNAME, PROOF_CMD, CLEAR }
+%   PvsResponse: TYPE = { TCCS, SEQUENT, SEQUENT_BRANCH_COMPLETE, SEQUENT_QED, PRF_PROOF, ERROR_MUST_EXIT_PROVER_FIRST, PROOF_ABORTED, ERROR_PROOF_NOT_FOUND, TYPECHECK_SUCCESS, TYPECHECK_ERROR, PARSE_SUCCESS, PARSE_ERROR, ERROR_NOT_TYPECHECKED, FOLDERNAME, NULL_RES }
+
+%   %-- operating modes
+%   Mode: TYPE = { AWAIT_CMD, FS_UPDATE, GET_PROOF_SCRIPT, INTERRUPTING, PARSING, PROVING, READY, SAVE_PROOF, START_PROVER, SW_UPDATE, TCCS, TYPECHECKING, WORKSPACE_UPDATE }
+
+%   %-- state attributes
+%   State: TYPE = [#
+%     mode: Mode,
+%     previous_mode: Mode,
+%     defs: DefinitionList,
+%     parsed: boolean,
+%     req: PvsRequest,
+%     res: PvsResponse,
+%     typechecked: boolean,
+%     unsavedProof: boolean
+%   #]
+
+%   %-- init function
+%   init(x: real): State = (#
+%     previous_mode := READY, 
+%     mode := READY, 
+%     defs := EMPTY, 
+%     parsed := false, 
+%     req := NULL_REQ, 
+%     res := NULL_RES, 
+%     typechecked := false, 
+%     unsavedProof := false
+%   #)
+
+%   %-- leave/enter functions
+%   enter(m: Mode)(st: State): State = 
+%     LET st = st WITH [ mode := m ]
+%      IN COND %-- entry actions
+%          mode(st) = AWAIT_CMD
+%            -> LET st = st WITH [ req := NULL_REQ ]
+%                IN st,
+%          mode(st) = READY
+%            -> LET st = st WITH [ req := NULL_REQ ]
+%                IN st,
+%            ELSE -> st
+%         ENDCOND
+%   leave(m: Mode)(st: State): State = 
+%     LET st = st WITH [ mode := m ]
+%      IN COND %-- entry actions
+%          mode(st) = PARSING
+%            -> LET st = st WITH [ defs := UPDATED_DEFS ]
+%                IN st,
+%          mode(st) = READY
+%            -> LET st = st WITH [ unsavedProof := false ]
+%                IN st,
+%          mode(st) = TYPECHECKING
+%            -> LET st = st WITH [ defs := UPDATED_DEFS ]
+%                IN st,
+%            ELSE -> st
+%         ENDCOND
+
+%   %-- triggers
+%   per_changeWorkspace(st: State): bool = (mode(st) = READY)
+%   changeWorkspace(st: (per_changeWorkspace)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FOLDERNAME ]
+%           IN enter(WORKSPACE_UPDATE)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_clearTheories(st: State): bool = (mode(st) = READY)
+%   clearTheories(st: (per_clearTheories)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := CLEAR ]
+%           IN enter(WORKSPACE_UPDATE)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_evt_DID_UPDATE_FS(st: State): bool = (mode(st) = READY)
+%   evt_DID_UPDATE_FS(st: (per_evt_DID_UPDATE_FS)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st)
+%           IN enter(FS_UPDATE)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_interrupt(st: State): bool = (mode(st) = PROVING)
+%   interrupt(st: (per_interrupt)): State =
+%     COND
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st)
+%           IN enter(INTERRUPTING)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_loadPvsPatches(st: State): bool = (mode(st) = READY)
+%   loadPvsPatches(st: (per_loadPvsPatches)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st)
+%           IN enter(SW_UPDATE)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_ABORT(st: State): bool = (mode(st) = PROVING)
+%   notify_ABORT(st: (per_notify_ABORT)): State =
+%     COND
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st),
+%              st = st WITH [ res := PROOF_ABORTED ],
+%              st = st WITH [ unsavedProof := true ]
+%           IN enter(READY)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_BRANCH_COMPLETE(st: State): bool = (mode(st) = PROVING)
+%   notify_BRANCH_COMPLETE(st: (per_notify_BRANCH_COMPLETE)): State =
+%     COND
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st),
+%              st = st WITH [ res := SEQUENT_BRANCH_COMPLETE ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_ERROR(st: State): bool = (mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true ))
+%     OR (mode(st) = PARSING)
+%     OR (mode(st) = TYPECHECKING)
+%   notify_ERROR(st: (per_notify_ERROR)): State =
+%     COND
+%      mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true )
+%       -> LET st = leave(GET_PROOF_SCRIPT)(st),
+%              st = st WITH [ res := ERROR_PROOF_NOT_FOUND ]
+%           IN enter(READY)(st),
+%      mode(st) = PARSING
+%       -> LET st = leave(PARSING)(st),
+%              st = st WITH [ parsed := false ],
+%              st = st WITH [ res := PARSE_ERROR ]
+%           IN enter(READY)(st),
+%      mode(st) = TYPECHECKING
+%       -> LET st = leave(TYPECHECKING)(st),
+%              st = st WITH [ typechecked := false ],
+%              st = st WITH [ res := TYPECHECK_ERROR ]
+%           IN enter(READY)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_INTERRUPTED_BY_CLIENT(st: State): bool = (mode(st) = INTERRUPTING)
+%   notify_INTERRUPTED_BY_CLIENT(st: (per_notify_INTERRUPTED_BY_CLIENT)): State =
+%     COND
+%      mode(st) = INTERRUPTING
+%       -> LET st = leave(INTERRUPTING)(st),
+%              st = st WITH [ res := SEQUENT ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_INVALID_COMMAND(st: State): bool = (mode(st) = PROVING)
+%   notify_INVALID_COMMAND(st: (per_notify_INVALID_COMMAND)): State =
+%     COND
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st),
+%              st = st WITH [ res := SEQUENT ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_NO_CHANGE(st: State): bool = (mode(st) = PROVING)
+%   notify_NO_CHANGE(st: (per_notify_NO_CHANGE)): State =
+%     COND
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st),
+%              st = st WITH [ res := SEQUENT ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_PROOF_SCRIPT(st: State): bool = (mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true ))
+%   notify_PROOF_SCRIPT(st: (per_notify_PROOF_SCRIPT)): State =
+%     COND
+%      mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = true )
+%       -> LET st = leave(GET_PROOF_SCRIPT)(st),
+%              st = st WITH [ res := PRF_PROOF ]
+%           IN enter(READY)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_QED(st: State): bool = (mode(st) = START_PROVER AND ( typechecked(st) = true ))
+%     OR (mode(st) = PROVING)
+%   notify_QED(st: (per_notify_QED)): State =
+%     COND
+%      mode(st) = START_PROVER AND ( typechecked(st) = true )
+%       -> LET st = leave(START_PROVER)(st),
+%              st = st WITH [ res := SEQUENT_QED ]
+%           IN enter(READY)(st),
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st),
+%              st = st WITH [ res := SEQUENT_QED ]
+%           IN enter(SAVE_PROOF)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_SEQUENT(st: State): bool = (mode(st) = START_PROVER AND ( typechecked(st) = true ))
+%     OR (mode(st) = PROVING)
+%   notify_SEQUENT(st: (per_notify_SEQUENT)): State =
+%     COND
+%      mode(st) = START_PROVER AND ( typechecked(st) = true )
+%       -> LET st = leave(START_PROVER)(st),
+%              st = st WITH [ res := SEQUENT ]
+%           IN enter(AWAIT_CMD)(st),
+%      mode(st) = PROVING
+%       -> LET st = leave(PROVING)(st),
+%              st = st WITH [ res := SEQUENT ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_SUCCESS(st: State): bool = (mode(st) = TYPECHECKING AND ( previous_mode(st) = READY ))
+%     OR (mode(st) = PARSING)
+%   notify_SUCCESS(st: (per_notify_SUCCESS)): State =
+%     COND
+%      mode(st) = TYPECHECKING AND ( previous_mode(st) = READY )
+%       -> LET st = leave(TYPECHECKING)(st),
+%              st = st WITH [ typechecked := true ],
+%              st = st WITH [ res := TYPECHECK_SUCCESS ]
+%           IN enter(READY)(st),
+%      mode(st) = PARSING
+%       -> LET st = leave(PARSING)(st),
+%              st = st WITH [ parsed := true ],
+%              st = st WITH [ res := PARSE_SUCCESS ]
+%           IN enter(READY)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_notify_TCCS(st: State): bool = (mode(st) = TCCS AND ( typechecked(st) = true ))
+%   notify_TCCS(st: (per_notify_TCCS)): State =
+%     COND
+%      mode(st) = TCCS AND ( typechecked(st) = true )
+%       -> LET st = leave(TCCS)(st),
+%              st = st WITH [ res := TCCS ]
+%           IN enter(READY)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_parseFile(st: State): bool = (mode(st) = READY)
+%   parseFile(st: (per_parseFile)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FILENAME ]
+%           IN enter(PARSING)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_proofCommand(st: State): bool = (mode(st) = AWAIT_CMD)
+%   proofCommand(st: (per_proofCommand)): State =
+%     COND
+%      mode(st) = AWAIT_CMD
+%       -> LET st = leave(AWAIT_CMD)(st),
+%              st = st WITH [ req := PROOF_CMD ]
+%           IN enter(PROVING)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_proofScript(st: State): bool = (mode(st) = READY)
+%     OR (mode(st) = AWAIT_CMD)
+%   proofScript(st: (per_proofScript)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FILENAME_FORMULANAME ]
+%           IN enter(GET_PROOF_SCRIPT)(st),
+%      mode(st) = AWAIT_CMD
+%       -> LET st = leave(AWAIT_CMD)(st),
+%              st = st WITH [ res := ERROR_MUST_EXIT_PROVER_FIRST ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_proveFormula(st: State): bool = (mode(st) = READY)
+%     OR (mode(st) = AWAIT_CMD)
+%   proveFormula(st: (per_proveFormula)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FORMULANAME_FULLTHEORYNAME ]
+%           IN enter(START_PROVER)(st),
+%      mode(st) = AWAIT_CMD
+%       -> LET st = leave(AWAIT_CMD)(st),
+%              st = st WITH [ res := ERROR_MUST_EXIT_PROVER_FIRST ]
+%           IN enter(AWAIT_CMD)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_saveLastStoredProofAttempt(st: State): bool = (mode(st) = READY AND ( unsavedProof(st) = true ))
+%   saveLastStoredProofAttempt(st: (per_saveLastStoredProofAttempt)): State =
+%     COND
+%      mode(st) = READY AND ( unsavedProof(st) = true )
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FORMULANAME_FULLTHEORYNAME ]
+%           IN enter(SAVE_PROOF)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_showTCCs(st: State): bool = (mode(st) = READY)
+%   showTCCs(st: (per_showTCCs)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FULLTHEORYNAME ]
+%           IN enter(TCCS)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_tick(st: State): bool = (mode(st) = INTERRUPTING)
+%     OR (mode(st) = SW_UPDATE)
+%     OR (mode(st) = TYPECHECKING AND ( previous_mode(st) = GET_PROOF_SCRIPT ))
+%     OR (mode(st) = TYPECHECKING AND ( previous_mode(st) = TCCS ))
+%     OR (mode(st) = TCCS AND ( typechecked(st) = false ))
+%     OR (mode(st) = TYPECHECKING AND ( previous_mode(st) = START_PROVER ))
+%     OR (mode(st) = WORKSPACE_UPDATE AND ( req(st) = CLEAR ))
+%     OR (mode(st) = WORKSPACE_UPDATE AND ( req(st) = FOLDERNAME ))
+%     OR (mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = false ))
+%     OR (mode(st) = START_PROVER AND ( typechecked(st) = false ))
+%     OR (mode(st) = FS_UPDATE)
+%     OR (mode(st) = SAVE_PROOF)
+%   tick(st: (per_tick)): State =
+%     COND
+%      mode(st) = INTERRUPTING
+%       -> LET st = leave(INTERRUPTING)(st)
+%           IN enter(PROVING)(st),
+%      mode(st) = SW_UPDATE
+%       -> LET st = leave(SW_UPDATE)(st)
+%           IN enter(READY)(st),
+%      mode(st) = TYPECHECKING AND ( previous_mode(st) = GET_PROOF_SCRIPT )
+%       -> LET st = leave(TYPECHECKING)(st),
+%              st = st WITH [ typechecked := true ]
+%           IN enter(GET_PROOF_SCRIPT)(st),
+%      mode(st) = TYPECHECKING AND ( previous_mode(st) = TCCS )
+%       -> LET st = leave(TYPECHECKING)(st),
+%              st = st WITH [ typechecked := true ]
+%           IN enter(TCCS)(st),
+%      mode(st) = TCCS AND ( typechecked(st) = false )
+%       -> LET st = leave(TCCS)(st)
+%           IN enter(TYPECHECKING)(st),
+%      mode(st) = TYPECHECKING AND ( previous_mode(st) = START_PROVER )
+%       -> LET st = leave(TYPECHECKING)(st),
+%              st = st WITH [ typechecked := true ]
+%           IN enter(START_PROVER)(st),
+%      mode(st) = WORKSPACE_UPDATE AND ( req(st) = CLEAR )
+%       -> LET st = leave(WORKSPACE_UPDATE)(st),
+%              st = st WITH [ defs := EMPTY ],
+%              st = st WITH [ parsed := false ],
+%              st = st WITH [ typechecked := false ]
+%           IN enter(READY)(st),
+%      mode(st) = WORKSPACE_UPDATE AND ( req(st) = FOLDERNAME )
+%       -> LET st = leave(WORKSPACE_UPDATE)(st),
+%              st = st WITH [ res := FOLDERNAME ]
+%           IN enter(READY)(st),
+%      mode(st) = GET_PROOF_SCRIPT AND ( typechecked(st) = false )
+%       -> LET st = leave(GET_PROOF_SCRIPT)(st)
+%           IN enter(TYPECHECKING)(st),
+%      mode(st) = START_PROVER AND ( typechecked(st) = false )
+%       -> LET st = leave(START_PROVER)(st)
+%           IN enter(TYPECHECKING)(st),
+%      mode(st) = FS_UPDATE
+%       -> LET st = leave(FS_UPDATE)(st),
+%              st = st WITH [ parsed := false ],
+%              st = st WITH [ typechecked := false ]
+%           IN enter(READY)(st),
+%      mode(st) = SAVE_PROOF
+%       -> LET st = leave(SAVE_PROOF)(st),
+%              st = st WITH [ unsavedProof := false ]
+%           IN enter(READY)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%   per_typecheckFile(st: State): bool = (mode(st) = READY)
+%   typecheckFile(st: (per_typecheckFile)): State =
+%     COND
+%      mode(st) = READY
+%       -> LET st = leave(READY)(st),
+%              st = st WITH [ req := FILENAME ]
+%           IN enter(TYPECHECKING)(st),
+%      ELSE -> st
+%     ENDCOND
+
+%  END pvsServer

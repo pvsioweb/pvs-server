@@ -1,0 +1,12 @@
+TCCs summary for theory pvsServer
+
+	leave_TCC1......................................................✅ proved              (0.471 s)
+	notify_ERROR_TCC1...............................................✅ proved              (0.364 s)
+	notify_QED_TCC1.................................................✅ proved              (0.336 s)
+	notify_SEQUENT_TCC1.............................................✅ proved              (0.328 s)
+	notify_SUCCESS_TCC1.............................................✅ proved              (0.335 s)
+	proofScript_TCC1................................................✅ proved              (0.328 s)
+	proveFormula_TCC1...............................................✅ proved              (0.324 s)
+	tick_TCC1.......................................................✅ proved              (1.259 s)
+
+Theory pvsServer totals: 8 formulas, 8 attempted, 8 succeeded (3.745 s)

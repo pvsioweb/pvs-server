@@ -1,0 +1,114 @@
+(pvsServer
+ (leave_TCC1 0
+  (leave_TCC1-1 nil 3863462174 ("" (cond-disjoint-tcc) nil nil) nil nil
+   (leave disjointness
+    "COND mode(pvsServer.st) = pvsServer.PARSING -> LET st = pvsServer.st WITH [defs := pvsServer.UPDATED_DEFS] IN pvsServer.st, mode(pvsServer.st) = pvsServer.READY -> LET st = pvsServer.st WITH [unsavedProof := booleans.FALSE] IN pvsServer.st, mode(pvsServer.st) = pvsServer.TYPECHECKING -> LET st = pvsServer.st WITH [defs := pvsServer.UPDATED_DEFS] IN pvsServer.st, ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (notify_ERROR_TCC1 0
+  (notify_ERROR_TCC1-1 nil 3863462174 ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_notify_ERROR const-decl "bool" pvsServer nil))
+   nil
+   (notify_ERROR disjointness
+    "COND booleans.AND(mode(pvsServer.st) = pvsServer.GET_PROOF_SCRIPT, (typechecked(pvsServer.st) = booleans.TRUE)) -> LET st = pvsServer.leave(pvsServer.GET_PROOF_SCRIPT)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.ERROR_PROOF_NOT_FOUND] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), mode(pvsServer.st) = pvsServer.PARSING -> LET st = pvsServer.leave(pvsServer.PARSING)(pvsServer.st), st = pvsServer.st WITH [parsed := booleans.FALSE], st = pvsServer.st WITH [res := pvsServer.PARSE_ERROR] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), mode(pvsServer.st) = pvsServer.TYPECHECKING -> LET st = pvsServer.leave(pvsServer.TYPECHECKING)(pvsServer.st), st = pvsServer.st WITH [typechecked := booleans.FALSE], st = pvsServer.st WITH [res := pvsServer.TYPECHECK_ERROR] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (notify_QED_TCC1 0
+  (notify_QED_TCC1-1 nil 3863462174 ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_notify_QED const-decl "bool" pvsServer nil))
+   nil
+   (notify_QED disjointness
+    "COND booleans.AND(mode(pvsServer.st) = pvsServer.START_PROVER, (typechecked(pvsServer.st) = booleans.TRUE)) -> LET st = pvsServer.leave(pvsServer.START_PROVER)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.SEQUENT_QED] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), mode(pvsServer.st) = pvsServer.PROVING -> LET st = pvsServer.leave(pvsServer.PROVING)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.SEQUENT_QED] IN pvsServer.enter(pvsServer.SAVE_PROOF)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (notify_SEQUENT_TCC1 0
+  (notify_SEQUENT_TCC1-1 nil 3863462174
+   ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_notify_SEQUENT const-decl "bool" pvsServer nil))
+   nil
+   (notify_SEQUENT disjointness
+    "COND booleans.AND(mode(pvsServer.st) = pvsServer.START_PROVER, (typechecked(pvsServer.st) = booleans.TRUE)) -> LET st = pvsServer.leave(pvsServer.START_PROVER)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.SEQUENT] IN pvsServer.enter(pvsServer.AWAIT_CMD)(pvsServer.st), mode(pvsServer.st) = pvsServer.PROVING -> LET st = pvsServer.leave(pvsServer.PROVING)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.SEQUENT] IN pvsServer.enter(pvsServer.AWAIT_CMD)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (notify_SUCCESS_TCC1 0
+  (notify_SUCCESS_TCC1-1 nil 3863462174
+   ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_notify_SUCCESS const-decl "bool" pvsServer nil))
+   nil
+   (notify_SUCCESS disjointness
+    "COND booleans.AND(mode(pvsServer.st) = pvsServer.TYPECHECKING, (previous_mode(pvsServer.st) = pvsServer.READY)) -> LET st = pvsServer.leave(pvsServer.TYPECHECKING)(pvsServer.st), st = pvsServer.st WITH [typechecked := booleans.TRUE], st = pvsServer.st WITH [res := pvsServer.TYPECHECK_SUCCESS] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), mode(pvsServer.st) = pvsServer.PARSING -> LET st = pvsServer.leave(pvsServer.PARSING)(pvsServer.st), st = pvsServer.st WITH [parsed := booleans.TRUE], st = pvsServer.st WITH [res := pvsServer.PARSE_SUCCESS] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (proofScript_TCC1 0
+  (proofScript_TCC1-1 nil 3863462174 ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_proofScript const-decl "bool" pvsServer nil))
+   nil
+   (proofScript disjointness
+    "COND mode(pvsServer.st) = pvsServer.READY -> LET st = pvsServer.leave(pvsServer.READY)(pvsServer.st), st = pvsServer.st WITH [req := pvsServer.FILENAME_FORMULANAME] IN pvsServer.enter(pvsServer.GET_PROOF_SCRIPT)(pvsServer.st), mode(pvsServer.st) = pvsServer.AWAIT_CMD -> LET st = pvsServer.leave(pvsServer.AWAIT_CMD)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.ERROR_MUST_EXIT_PROVER_FIRST] IN pvsServer.enter(pvsServer.AWAIT_CMD)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (proveFormula_TCC1 0
+  (proveFormula_TCC1-1 nil 3863462174 ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_proveFormula const-decl "bool" pvsServer nil))
+   nil
+   (proveFormula disjointness
+    "COND mode(pvsServer.st) = pvsServer.READY -> LET st = pvsServer.leave(pvsServer.READY)(pvsServer.st), st = pvsServer.st WITH [req := pvsServer.FORMULANAME_FULLTHEORYNAME] IN pvsServer.enter(pvsServer.START_PROVER)(pvsServer.st), mode(pvsServer.st) = pvsServer.AWAIT_CMD -> LET st = pvsServer.leave(pvsServer.AWAIT_CMD)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.ERROR_MUST_EXIT_PROVER_FIRST] IN pvsServer.enter(pvsServer.AWAIT_CMD)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil")))
+ (tick_TCC1 0
+  (tick_TCC1-1 nil 3863462174 ("" (cond-disjoint-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (DefinitionList type-decl nil pvsServer nil)
+    (Mode type-decl nil pvsServer nil)
+    (PvsRequest type-decl nil pvsServer nil)
+    (PvsResponse type-decl nil pvsServer nil)
+    (State type-eq-decl nil pvsServer nil)
+    (per_tick const-decl "bool" pvsServer nil))
+   nil
+   (tick disjointness
+    "COND mode(pvsServer.st) = pvsServer.INTERRUPTING -> LET st = pvsServer.leave(pvsServer.INTERRUPTING)(pvsServer.st) IN pvsServer.enter(pvsServer.PROVING)(pvsServer.st), mode(pvsServer.st) = pvsServer.SW_UPDATE -> LET st = pvsServer.leave(pvsServer.SW_UPDATE)(pvsServer.st) IN pvsServer.enter(pvsServer.READY)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.TYPECHECKING, (previous_mode(pvsServer.st) = pvsServer.GET_PROOF_SCRIPT)) -> LET st = pvsServer.leave(pvsServer.TYPECHECKING)(pvsServer.st), st = pvsServer.st WITH [typechecked := booleans.TRUE] IN pvsServer.enter(pvsServer.GET_PROOF_SCRIPT)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.TYPECHECKING, (previous_mode(pvsServer.st) = pvsServer.TCCS)) -> LET st = pvsServer.leave(pvsServer.TYPECHECKING)(pvsServer.st), st = pvsServer.st WITH [typechecked := booleans.TRUE] IN pvsServer.enter(pvsServer.TCCS)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.TCCS, (typechecked(pvsServer.st) = booleans.FALSE)) -> LET st = pvsServer.leave(pvsServer.TCCS)(pvsServer.st) IN pvsServer.enter(pvsServer.TYPECHECKING)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.TYPECHECKING, (previous_mode(pvsServer.st) = pvsServer.START_PROVER)) -> LET st = pvsServer.leave(pvsServer.TYPECHECKING)(pvsServer.st), st = pvsServer.st WITH [typechecked := booleans.TRUE] IN pvsServer.enter(pvsServer.START_PROVER)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.WORKSPACE_UPDATE, (req(pvsServer.st) = pvsServer.CLEAR)) -> LET st = pvsServer.leave(pvsServer.WORKSPACE_UPDATE)(pvsServer.st), st = pvsServer.st WITH [defs := pvsServer.EMPTY], st = pvsServer.st WITH [parsed := booleans.FALSE], st = pvsServer.st WITH [typechecked := booleans.FALSE] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.WORKSPACE_UPDATE, (req(pvsServer.st) = pvsServer.FOLDERNAME)) -> LET st = pvsServer.leave(pvsServer.WORKSPACE_UPDATE)(pvsServer.st), st = pvsServer.st WITH [res := pvsServer.FOLDERNAME] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.GET_PROOF_SCRIPT, (typechecked(pvsServer.st) = booleans.FALSE)) -> LET st = pvsServer.leave(pvsServer.GET_PROOF_SCRIPT)(pvsServer.st) IN pvsServer.enter(pvsServer.TYPECHECKING)(pvsServer.st), booleans.AND(mode(pvsServer.st) = pvsServer.START_PROVER, (typechecked(pvsServer.st) = booleans.FALSE)) -> LET st = pvsServer.leave(pvsServer.START_PROVER)(pvsServer.st) IN pvsServer.enter(pvsServer.TYPECHECKING)(pvsServer.st), mode(pvsServer.st) = pvsServer.FS_UPDATE -> LET st = pvsServer.leave(pvsServer.FS_UPDATE)(pvsServer.st), st = pvsServer.st WITH [parsed := booleans.FALSE], st = pvsServer.st WITH [typechecked := booleans.FALSE] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), mode(pvsServer.st) = pvsServer.SAVE_PROOF -> LET st = pvsServer.leave(pvsServer.SAVE_PROOF)(pvsServer.st), st = pvsServer.st WITH [unsavedProof := booleans.FALSE] IN pvsServer.enter(pvsServer.READY)(pvsServer.st), ELSE -> pvsServer.st ENDCOND"
+    "nil"))))
+
